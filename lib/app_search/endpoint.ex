@@ -39,5 +39,4 @@ defmodule AppSearch.Endpoint do
     signing_salt: "klO0uv6z"
 
   plug AppSearch.Router
-#  plug AppSearch.Plug.JsonP
 end

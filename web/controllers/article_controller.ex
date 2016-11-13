@@ -8,7 +8,7 @@ defmodule AppSearch.ArticleController do
     conn
     |> put_status(:ok)
     |> put_resp_header("Content-Type", "application/javascript")
-    |> text(["/**/#{jsonp_callback}(", Poison.encode!(articles), ")"])
+    |> text("/**/#{jsonp_callback}(#{Poison.encode!(articles)})")
   end
 
   def show(conn, %{"id" => id}) do
