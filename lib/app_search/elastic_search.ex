@@ -49,22 +49,21 @@ defmodule ElasticSearch do
 
 
   @russian_article_types %{ "persona" => "Персоналии", "thesaurus" => "Глоссарий", "text" => "Тексты" }
-  @urls %{ "text" => "texts", "persona" => "personalii", "thesaurus" => "glossariy" }
+  @folders %{ "text" => "texts", "persona" => "personalii", "thesaurus" => "glossariy" }
 
-  defp extract_hit(h) do
-    article = h[:_source]
-    article_type = article.article_type
-    url = Map.get(@urls, article_type, "texts")
+  defp extract_hit(%{_id: id, _source: article, highlight: highlight} ) do
+    %{article_type: type, name: name, url: url} = article
+    folder = Map.get(@folders, type, "texts")
 
-    url = "http://app.papush.ru/#{url}/#{article.url}"
-    parent_link = if (article_type == "persona"), do: "personas.html", else: "thesaurus.html"
-    excerpts = ["", h[:highlight][:"content.analyzed"], ""] |> List.flatten |> Enum.join(" &#8230; ")
-    article_type = Map.get(@russian_article_types, article_type)
+    full_url = "http://app.papush.ru/#{folder}/#{url}"
+    parent_link = if (type == "persona"), do: "personas.html", else: "thesaurus.html"
+    excerpts = ["", highlight[:"content.analyzed"], ""] |> List.flatten |> Enum.join(" &#8230; ")
+    article_type = Map.get(@russian_article_types, type)
 
-    %{ id: h[:_id],
-      name: article.name,
+    %{ id: id,
+      name: name,
       article_type: article_type,
-      url: url,
+      url: full_url,
       parent_link: parent_link,
       excerpts: excerpts
     }
