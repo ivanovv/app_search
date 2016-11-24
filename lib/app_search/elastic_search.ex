@@ -1,4 +1,4 @@
-defmodule ElasticSearch do
+defmodule AppSearch.ElasticSearch do
 
   import Tirexs.Search
 
